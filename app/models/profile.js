@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const exampleSchema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
     required: true
   },
-  text: {
+  about: {
     type: String,
     required: true
   },

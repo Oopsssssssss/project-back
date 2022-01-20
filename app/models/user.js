@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  profile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Profile'
+  },
   token: String
 }, {
   timestamps: true,

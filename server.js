@@ -2,6 +2,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const { createServer } = require('http')
+const { Server } = require('socket.io')
 
 // require route files
 const profileRoutes = require('./app/routes/profile_routes')
@@ -22,7 +24,6 @@ const auth = require('./lib/auth')
 // used for cors and local port declaration
 const serverDevPort = 4741
 const clientDevPort = 7165
-
 // establish database connection
 // use new version of URL parser
 // use createIndex instead of deprecated ensureIndex
@@ -32,8 +33,20 @@ mongoose.connect(db, {
   useUnifiedTopology: true
 })
 
-// instantiate express application object
+// instantiate express application object and companion server for
+// sockets.
 const app = express()
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:7165',
+    allowedHeaders: ['my-custom-header'],
+    credentials: true
+  }
+})
+io.on('connection', (socket) => {
+  console.log(`New socket ${socket}`)
+})
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
@@ -65,7 +78,7 @@ app.use(userRoutes)
 app.use(errorHandler)
 
 // run API on designated port (4741 in this case)
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log('listening on port ' + port)
 })
 

@@ -68,7 +68,7 @@ router.post('/profiles', requireToken, (req, res, next) => {
       // we are finding the owner and tying the profile id to the user object for later use
       User.findById(req.user.id)
         .then(user => {
-          user.profile = profile._id
+          user.profile = profile
           return user.save()
         })
         .then(() => res.status(201).json({ profile: profile.toObject() }))

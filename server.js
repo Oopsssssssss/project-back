@@ -40,7 +40,6 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, {
   cors: {
     origin: 'http://localhost:7165',
-    allowedHeaders: ['my-custom-header'],
     credentials: true
   }
 })

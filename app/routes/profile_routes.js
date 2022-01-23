@@ -69,6 +69,7 @@ router.post('/profiles', requireToken, (req, res, next) => {
       User.findById(req.user.id)
         .then(user => {
           user.profile = profile
+          console.log(user)
           return user.save()
         })
         .then(() => res.status(201).json({ profile: profile.toObject() }))

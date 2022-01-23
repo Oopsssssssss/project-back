@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   profile: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.Object,
     ref: 'Profile'
   },
   token: String

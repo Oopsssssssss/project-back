@@ -33,9 +33,11 @@ router.post('/sign-up', (req, res, next) => {
     // reject any requests where `credentials.password` is not present, or where
     // the password is an empty string
     .then(credentials => {
-      if (!credentials ||
-          !credentials.password ||
-          credentials.password !== credentials.password_confirmation) {
+      if (
+        !credentials ||
+        !credentials.password ||
+        credentials.password !== credentials.password_confirmation
+      ) {
         throw new BadParamsError()
       }
     })
@@ -64,8 +66,7 @@ router.post('/sign-in', (req, res, next) => {
   let user
 
   // find a user based on the email that was passed
-  User.findOne({ email: req.body.credentials.email })
-    .populate('Profile')
+  User.findOne({ email: req.body.credentials.email }).populate('profile')
     .then(record => {
       // if we didn't find a user with that email, send 401
       if (!record) {
@@ -92,6 +93,7 @@ router.post('/sign-in', (req, res, next) => {
       }
     })
     .then(user => {
+      console.log(user)
       // return status 201, the email, and the new token
       res.status(201).json({ user: user.toObject() })
     })
@@ -105,7 +107,9 @@ router.patch('/change-password', requireToken, (req, res, next) => {
   // `req.user` will be determined by decoding the token payload
   User.findById(req.user.id)
     // save user outside the promise chain
-    .then(record => { user = record })
+    .then(record => {
+      user = record
+    })
     // check that the old password is correct
     .then(() => bcrypt.compare(req.body.passwords.old, user.hashedPassword))
     // `correctPassword` will be true if hashing the old password ends up the
@@ -134,7 +138,8 @@ router.delete('/sign-out', requireToken, (req, res, next) => {
   // create a new random token for the user, invalidating the current one
   req.user.token = null
   // save the token and respond with 204
-  req.user.save()
+  req.user
+    .save()
     .then(() => res.sendStatus(204))
     .catch(next)
 })

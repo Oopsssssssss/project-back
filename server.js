@@ -39,17 +39,49 @@ const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
   cors: {
+    // update this when deploying
     origin: 'http://localhost:7165',
     credentials: true
   }
 })
-io.on('connection', (socket) => {
-  console.log(`New socket ${socket}`)
+io.on('connection', socket => {
+  console.log('We have a sock-et connection!!!!')
+  // In the socket.on we will specify the event chatMessage. We have our callback function, and something that is going to happen on chatMessage. So we have our parameters chatObject
+  socket.on('message', ({ name, message }) => {
+    console.log(name, message)
+    // io.on('connection', socket => {
+    io.emit('message', { name, message })
+  })
 })
+// const { error, user } = ProfileCreate({ id: socket.id, name, aboutMe })
+// if (error) return callback(error)
+// socket.emit('message', {
+//   user: 'admin',
+//   text: `${user.name}, welcome to the Socket-To-Me Chat`
+// })
+// socket.broadcast.to(user).emit('message', {
+//   user: 'admin',
+//   text: `${user.name}, has joined the Socket-To-Me Chat!`
+// })
 
+//   socket.join(user.chatObject)
+//   callback()
+// socket.on('disconnect', () => {
+//   console.log('The sock has left!!!')
+// })
+
+// // now we are creating user generated messages
+// socket.on('sendMessage', (message, callback) => {
+//   const user = getUser(socket.id)
+
+// })
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}` }))
+app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}`
+  })
+)
 
 // define port for API to run on
 const port = process.env.PORT || serverDevPort

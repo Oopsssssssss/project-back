@@ -33,16 +33,13 @@ mongoose.connect(db, {
   useUnifiedTopology: true
 })
 
-const allowedOrigin =
-  process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}`
-
+const allowedOrigin = process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}`
 // instantiate express application object and companion server for
 // sockets.
 const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
   cors: {
-    // update this when deploying
     origin: allowedOrigin,
     credentials: true
   }

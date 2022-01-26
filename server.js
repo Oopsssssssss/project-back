@@ -33,6 +33,9 @@ mongoose.connect(db, {
   useUnifiedTopology: true
 })
 
+const allowedOrigin =
+  process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}`
+
 // instantiate express application object and companion server for
 // sockets.
 const app = express()
@@ -40,7 +43,7 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, {
   cors: {
     // update this when deploying
-    origin: 'http://localhost:7165',
+    origin: allowedOrigin,
     credentials: true
   }
 })
@@ -79,7 +82,7 @@ io.on('connection', socket => {
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}`
+    origin: allowedOrigin
   })
 )
 
